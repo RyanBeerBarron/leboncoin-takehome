@@ -1,6 +1,6 @@
 package com.leboncoin.fizzbuzz.controller;
 
-import com.leboncoin.fizzbuzz.dto.StatisticsResponse;
+import com.leboncoin.fizzbuzz.dto.StatisticsResponseDTO;
 import com.leboncoin.fizzbuzz.service.StatisticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,8 +20,10 @@ public class StatisticsController {
     }
 
     @GetMapping
-    @Operation(summary = "Get most frequent request", description = "Returns the most frequently used FizzBuzz request parameters and hit count")
-    public StatisticsResponse getMostFrequentRequest() {
+    @Operation(
+            summary = "Get most frequent request",
+            description = "Returns the most frequently used FizzBuzz request parameters and hit count")
+    public StatisticsResponseDTO getMostFrequentRequest() {
         return statisticsService.getMostFrequentRequest();
     }
 }

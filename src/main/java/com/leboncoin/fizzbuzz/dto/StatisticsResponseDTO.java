@@ -3,11 +3,9 @@ package com.leboncoin.fizzbuzz.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Statistics response containing the most frequent request")
-public record StatisticsResponse(
+public record StatisticsResponseDTO(
         @Schema(description = "The most frequent request parameters, null if no requests have been made")
-        FizzBuzzRequest mostFrequentRequest,
+        FizzBuzzRequestDTO mostFrequentRequest,
 
         @Schema(description = "Number of times this request has been made")
-        long hits
-) {
-}
+        long hits) {}

@@ -1,15 +1,14 @@
 # FizzBuzz REST API
 
-A production-ready REST API for generating customizable FizzBuzz sequences with request statistics tracking.
+REST API for generating customizable FizzBuzz sequences with request statistics tracking. Using Spring boot 4 and virtual threads.
 
 ## Dependencies
 
-- **Java 25** - Latest LTS with virtual threads support
-- **Spring Boot 4** - Web framework
-- **Jackson 3** - JSON serialization with streaming support
-- **Gradle 8.12** - Build tool
-- **JUnit 6** - Testing framework
-- **Springdoc OpenAPI** - Swagger UI for API documentation
+- **Java 25** 
+- **Spring Boot 4** 
+- **Jackson 3** 
+- **JUnit 6** 
+- **Springdoc OpenAPI** 
 
 ## Running the Server
 
@@ -27,21 +26,7 @@ docker run -p 8080:8080 fizzbuzz
 ```
 
 ## API Endpoints
-
-### FizzBuzz Generation
-
-```
-GET /api/fizzbuzz?int1=3&int2=5&limit=15&str1=fizz&str2=buzz
-```
-
-### Statistics
-
-```
-GET /api/statistics
-```
-
-### Swagger UI
-
+Check the swagger UI
 ```
 http://localhost:8080/swagger
 ```
@@ -50,44 +35,22 @@ http://localhost:8080/swagger
 
 ### StreamingResponseBody
 
-The FizzBuzz endpoint uses `StreamingResponseBody` with Jackson's `JsonGenerator` to stream the response directly to the client. This approach:
+The FizzBuzz endpoint uses `StreamingResponseBody` with Jackson's `JsonGenerator` to stream the response instead of buffering it in memory. 
+With virtual threads, this allows for many concurrent requests that each use low amount of memory, since the entire response does not need to fit in memory.
+This provides high scalibity while keeping a simpler programming model as compared to an async non-blocking I/O model.
 
-- Avoids loading the entire result into memory
-- Allows handling very large `limit` values without OOM errors
-- Starts sending data immediately rather than waiting for full computation
+### Statistics
 
-### Virtual Threads
+Uses `ConcurrentHashMap` with `LongAdder` to keep track of the statistics, for simplicity.
+But in a real production environment, you would add a telemetry framework for this.
+Either (Micrometer)[https://micrometer.io/] **OR** (Opentelemetry)[https://opentelemetry.io/]
+And export the metrics to a telemetry backend, like Prometheus or Datadog, etc...<br/>
 
-Enabled via `spring.threads.virtual.enabled=true`. Each request runs on a lightweight virtual thread, improving throughput for I/O-bound operations without the overhead of platform threads.
 
-### Thread-Safe Statistics
-
-Uses `ConcurrentHashMap` with `LongAdder` for lock-free, high-performance request counting:
-
-- `ConcurrentHashMap` ensures thread-safe map operations
-- `LongAdder` provides better performance than `AtomicLong` under high contention
-
-## Potential Extensions
-
-### Centralized Statistics Store
-
-The current in-memory statistics are lost on restart and don't work across multiple instances. Options:
-
-- **Redis** - Fast, supports atomic increments with `INCR`
-- **PostgreSQL** - Persistent, supports `ON CONFLICT DO UPDATE`
-
-### Metrics with Micrometer and Prometheus
-
-For production observability:
-
+Example using micrometer:
 ```java
 @Autowired
 MeterRegistry registry;
 
 registry.counter("fizzbuzz.requests", "int1", "3", "int2", "5").increment();
 ```
-
-This enables:
-- Time-series data with retention policies
-- Grafana dashboards for visualization
-- Alerting on anomalies

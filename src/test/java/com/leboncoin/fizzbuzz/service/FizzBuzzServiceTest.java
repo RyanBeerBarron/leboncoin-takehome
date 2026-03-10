@@ -1,12 +1,10 @@
 package com.leboncoin.fizzbuzz.service;
 
-import com.leboncoin.fizzbuzz.dto.FizzBuzzRequest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class FizzBuzzServiceTest {
 
@@ -19,21 +17,20 @@ class FizzBuzzServiceTest {
 
     @Test
     void generate_classicFizzBuzz_returnsCorrectSequence() {
-        var request = new FizzBuzzRequest(3, 5, 15, "fizz", "buzz");
+        var request = new FizzBuzzService.Query(
+                15, List.of(new FizzBuzzService.Predicate(3, "fizz"), new FizzBuzzService.Predicate(5, "buzz")));
 
         List<String> result = fizzBuzzService.generate(request).toList();
 
         var expected = List.of(
-                "1", "2", "fizz", "4", "buzz",
-                "fizz", "7", "8", "fizz", "buzz",
-                "11", "fizz", "13", "14", "fizzbuzz"
-        );
+                "1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz", "11", "fizz", "13", "14", "fizzbuzz");
         assertEquals(expected, result);
     }
 
     @Test
     void generate_customStrings_usesProvidedStrings() {
-        var request = new FizzBuzzRequest(2, 3, 6, "foo", "bar");
+        var request = new FizzBuzzService.Query(
+                6, List.of(new FizzBuzzService.Predicate(2, "foo"), new FizzBuzzService.Predicate(3, "bar")));
 
         List<String> result = fizzBuzzService.generate(request).toList();
 
@@ -42,7 +39,8 @@ class FizzBuzzServiceTest {
 
     @Test
     void generate_limitOfOne_returnsSingleElement() {
-        var request = new FizzBuzzRequest(3, 5, 1, "fizz", "buzz");
+        var request = new FizzBuzzService.Query(
+                1, List.of(new FizzBuzzService.Predicate(3, "fizz"), new FizzBuzzService.Predicate(5, "buzz")));
 
         List<String> result = fizzBuzzService.generate(request).toList();
 
@@ -51,25 +49,23 @@ class FizzBuzzServiceTest {
 
     @Test
     void generate_sameDivisors_concatenatesBothStrings() {
-        var request = new FizzBuzzRequest(2, 2, 4, "foo", "bar");
+        var request = new FizzBuzzService.Query(
+                4, List.of(new FizzBuzzService.Predicate(2, "fizz"), new FizzBuzzService.Predicate(2, "buzz")));
 
         List<String> result = fizzBuzzService.generate(request).toList();
 
-        assertEquals(List.of("1", "foobar", "3", "foobar"), result);
+        assertEquals(List.of("1", "fizzbuzz", "3", "fizzbuzz"), result);
     }
 
     @Test
     void generate_preservesParameterOrder() {
-        var request = new FizzBuzzRequest(5, 3, 15, "buzz", "fizz");
+        var request = new FizzBuzzService.Query(
+                15, List.of(new FizzBuzzService.Predicate(5, "fizz"), new FizzBuzzService.Predicate(3, "buzz")));
 
         List<String> result = fizzBuzzService.generate(request).toList();
 
-        // str1 (buzz) comes before str2 (fizz) in output
         var expected = List.of(
-                "1", "2", "fizz", "4", "buzz",
-                "fizz", "7", "8", "fizz", "buzz",
-                "11", "fizz", "13", "14", "buzzfizz"
-        );
+                "1", "2", "buzz", "4", "fizz", "buzz", "7", "8", "buzz", "fizz", "11", "buzz", "13", "14", "fizzbuzz");
         assertEquals(expected, result);
     }
 }

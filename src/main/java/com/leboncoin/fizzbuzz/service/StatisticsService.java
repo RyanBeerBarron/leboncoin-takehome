@@ -1,12 +1,11 @@
 package com.leboncoin.fizzbuzz.service;
 
-import com.leboncoin.fizzbuzz.dto.FizzBuzzRequest;
-import com.leboncoin.fizzbuzz.dto.StatisticsResponse;
-import org.springframework.stereotype.Service;
-
+import com.leboncoin.fizzbuzz.dto.FizzBuzzRequestDTO;
+import com.leboncoin.fizzbuzz.dto.StatisticsResponseDTO;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
+import org.springframework.stereotype.Service;
 
 @Service
 public class StatisticsService {
@@ -15,17 +14,17 @@ public class StatisticsService {
     // 1. Map structural modifications (adding new keys) must be thread-safe
     // 2. computeIfAbsent must be atomic to ensure only one LongAdder is created per key
     // LongAdder is used instead of AtomicLong for better performance under high contention.
-    private final ConcurrentHashMap<FizzBuzzRequest, LongAdder> requestCounts = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<FizzBuzzRequestDTO, LongAdder> requestCounts = new ConcurrentHashMap<>();
 
-    public void recordRequest(FizzBuzzRequest request) {
-        requestCounts.computeIfAbsent(request, k -> new LongAdder()).increment();
+    public void recordRequest(FizzBuzzRequestDTO request) {
+        requestCounts.computeIfAbsent(request, _ -> new LongAdder()).increment();
     }
 
-    public StatisticsResponse getMostFrequentRequest() {
-        FizzBuzzRequest mostFrequent = null;
+    public StatisticsResponseDTO getMostFrequentRequest() {
+        FizzBuzzRequestDTO mostFrequent = null;
         long maxCount = 0;
 
-        for (Map.Entry<FizzBuzzRequest, LongAdder> entry : requestCounts.entrySet()) {
+        for (Map.Entry<FizzBuzzRequestDTO, LongAdder> entry : requestCounts.entrySet()) {
             long count = entry.getValue().sum();
             if (count > maxCount) {
                 maxCount = count;
@@ -33,6 +32,6 @@ public class StatisticsService {
             }
         }
 
-        return new StatisticsResponse(mostFrequent, maxCount);
+        return new StatisticsResponseDTO(mostFrequent, maxCount);
     }
 }

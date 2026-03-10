@@ -1,31 +1,25 @@
 package com.leboncoin.fizzbuzz.service;
 
-import com.leboncoin.fizzbuzz.dto.FizzBuzzRequest;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import org.springframework.stereotype.Service;
 
 @Service
 public class FizzBuzzService {
 
-    private record Replacement(int divisor, String value) {}
+    public record Predicate(int divisor, String value) {}
 
-    public Stream<String> generate(FizzBuzzRequest request) {
-        var replacements = List.of(
-                new Replacement(request.int1(), request.str1()),
-                new Replacement(request.int2(), request.str2())
-        );
+    public record Query(int limit, List<Predicate> predicates) {}
 
-        return IntStream.rangeClosed(1, request.limit())
-                .mapToObj(n -> computeValue(n, replacements));
+    public Stream<String> generate(Query query) {
+        return IntStream.rangeClosed(1, query.limit).mapToObj(n -> computeValue(n, query.predicates));
     }
 
-    private String computeValue(int n, List<Replacement> replacements) {
+    private String computeValue(int n, List<Predicate> predicates) {
         var result = new StringBuilder();
 
-        for (var replacement : replacements) {
+        for (var replacement : predicates) {
             if (n % replacement.divisor() == 0) {
                 result.append(replacement.value());
             }
