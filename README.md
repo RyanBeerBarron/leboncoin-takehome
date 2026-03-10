@@ -15,14 +15,19 @@ REST API for generating customizable FizzBuzz sequences with request statistics 
 ### With Gradle
 
 ```bash
-./gradlew bootRun
+$ ./gradlew bootRun
+```
+
+To run the tests:
+```bash
+$ ./gradlew test --rerun
 ```
 
 ### With Docker
 
 ```bash
-docker build -t fizzbuzz .
-docker run -p 8080:8080 fizzbuzz
+$ docker build -t fizzbuzz .
+$ docker run -p 8080:8080 fizzbuzz
 ```
 
 ## API Endpoints
