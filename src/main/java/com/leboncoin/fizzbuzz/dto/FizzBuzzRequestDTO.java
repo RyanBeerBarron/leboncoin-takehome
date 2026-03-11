@@ -32,6 +32,7 @@ public record FizzBuzzRequestDTO(
     /// component,
     /// we need to make sure that **NOTHING** in the `service` package knows about the web packages, like
     /// `controller` or `dto`
+    /// This principle follows 'Hexagonal Architecture'
     public FizzBuzzService.Query toQuery() {
         return new FizzBuzzService.Query(
                 this.limit,

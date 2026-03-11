@@ -47,10 +47,10 @@ This provides high scalibity while keeping a simpler programming model as compar
 ### Statistics
 
 Uses `ConcurrentHashMap` with `LongAdder` to keep track of the statistics, for simplicity.
-But in a real production environment, you would add a telemetry framework for this.
+But in a real production environment, it could run into problem, namely high memory usage since the content is never flushed out and persisted in a real data store.
+For a real production, you would add a telemetry framework for this.
 Either [Micrometer](https://micrometer.io/) **OR** [Opentelemetry](https://opentelemetry.io/)
 And export the metrics to a telemetry backend, like Prometheus or Datadog, etc...<br/>
-
 
 Example using micrometer:
 ```java

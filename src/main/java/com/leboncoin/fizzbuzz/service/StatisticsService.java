@@ -10,10 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class StatisticsService {
 
-    // ConcurrentHashMap is required even though LongAdder is thread-safe because:
-    // 1. Map structural modifications (adding new keys) must be thread-safe
-    // 2. computeIfAbsent must be atomic to ensure only one LongAdder is created per key
-    // LongAdder is used instead of AtomicLong for better performance under high contention.
+    /// Both `ConcurrentHashMap` and `LongAdder` are thread-safe variants of common data structure.
+    /// So why use both ? The `ConcurrentHashMap` is still needed despite the atomic counter for the
+    /// `computeIfAbsent` method.
+    /// It will create an entry if not present. Which needs to be thread-safe, to prevent one request to override
+    /// the newly created `LongAdder` from a concurrent request.
     private final ConcurrentHashMap<FizzBuzzRequestDTO, LongAdder> requestCounts = new ConcurrentHashMap<>();
 
     public void recordRequest(FizzBuzzRequestDTO request) {

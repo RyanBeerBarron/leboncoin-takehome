@@ -12,7 +12,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /// Putting the whole description in a separate file to keep {@link com.leboncoin.fizzbuzz.controller.FizzBuzzController
-// FizzBuzzController} easier to read
+/// FizzBuzzController} easier to read
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(
