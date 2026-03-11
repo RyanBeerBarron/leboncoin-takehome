@@ -48,7 +48,7 @@ This provides high scalibity while keeping a simpler programming model as compar
 
 Uses `ConcurrentHashMap` with `LongAdder` to keep track of the statistics, for simplicity.
 But in a real production environment, you would add a telemetry framework for this.
-Either (Micrometer)[https://micrometer.io/] **OR** (Opentelemetry)[https://opentelemetry.io/]
+Either [Micrometer](https://micrometer.io/) **OR** [Opentelemetry](https://opentelemetry.io/)
 And export the metrics to a telemetry backend, like Prometheus or Datadog, etc...<br/>
 
 

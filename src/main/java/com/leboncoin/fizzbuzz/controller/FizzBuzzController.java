@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import tools.jackson.core.JsonEncoding;
+import tools.jackson.core.ObjectWriteContext;
 import tools.jackson.core.json.JsonFactory;
 
 @RestController
@@ -36,7 +38,8 @@ public class FizzBuzzController {
         statisticsService.recordRequest(request);
 
         StreamingResponseBody body = outputStream -> {
-            try (var generator = jsonFactory.createGenerator(outputStream)) {
+            try (var generator =
+                    jsonFactory.createGenerator(ObjectWriteContext.empty(), outputStream, JsonEncoding.UTF8)) {
                 var stream = fizzBuzzService.generate(request.toQuery());
                 generator.writeStartArray();
                 stream.forEach(value -> {
